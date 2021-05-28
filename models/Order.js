@@ -5,18 +5,15 @@ const orderSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: "User",
     },
-    products: [{
-        type: Schema.Types.ObjectId,
-        ref: "Product",
-        required:true
-    }],
-
+   orderItems:[{ 
+       type:mongoose.Schema.Types.ObjectId,
+       ref: 'Order'
+   }],
     totalPrice:{
         type: Number,
         default: 0,
         required: true
     },
-
 
     status: {
         type: String,
@@ -24,6 +21,25 @@ const orderSchema = new mongoose.Schema({
         default:'pending',
        
     },
+
+    shippingAddress: {
+        type: String,
+    },
+
+    city: {
+        type: String,
+    },
+
+    country: {
+        type: String,
+        required: true
+    },
+
+    phone:{
+        type: String,
+        required: true
+    },
+
 },{
     timestamps: {createdAt: 'created_at', updatedAt: false}});
 const Order = mongoose.model('Order', orderSchema);

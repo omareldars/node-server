@@ -48,11 +48,10 @@ createOrder,
 } = require('../controllers/ordersController')
 
 const Order = require('../models/Order');
-
 const auth = require('../middlewares/auth')
 
 
-//get all 
+//get all for admin
 route.get('/all', async (req, res, next) => {
   try {
     const orders = await getAll();
@@ -62,46 +61,44 @@ route.get('/all', async (req, res, next) => {
   }
 });
 
-//Home 
+
+//Home for admin to get user data
 route.get('/home', async (req, res, next) => {
   try {
-   
     Order.find({}).lean().populate('user').then((order) => {
       res.json(order)
     })
   } catch (e) {
     next(e);
-
   }
 })
 
 
 
-//get your 
+//get your order
 route.get('/profile', auth, async (req, res, next) => {
   const { user: { id } } = req;
   try {
     const order = await getAll({ user: id });
     res.json(order);
-
   } catch (e) {
     next(e);
-
   }
 });
 
 
+// create order
 route.post('/add', auth, async (req, res, next) => {
-  console.log(req.user);
-  
+  console.log("from create order", req.user);
     const { body, user: { id } } = req;
-   
     createOrder({ ...body, user: id }).then(order => res.json(order)).catch(e => {
       console.log(e);
       next(e)
     });
   });
 
+  
+  
 //edit one 
 route.patch('/:_id', auth, async (req, res, next) => {
   const { params: { _id }, body, user: { id } } = req;
@@ -118,6 +115,7 @@ route.patch('/:_id', auth, async (req, res, next) => {
   }
 });
 
+
 //Delete 
 route.delete('/:_id', auth, async (req, res, next) => {
   const { params: { _id }, user: { id } } = req;
@@ -133,6 +131,7 @@ route.delete('/:_id', auth, async (req, res, next) => {
     next(e);
   }
 });
+
 
 //search 
 route.get('/search/:ser', auth, async (req, res, next) => {
